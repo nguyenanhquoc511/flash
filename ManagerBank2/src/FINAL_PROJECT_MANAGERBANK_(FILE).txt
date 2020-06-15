@@ -1,0 +1,1564 @@
+package Deals;
+
+public class Deal {
+
+	protected long idDeal, idCustomer, idReceive;
+	protected String date, time, note;
+	protected double money;
+	protected String kind;
+
+	public Deal() {
+		this.date = null;
+		this.idCustomer = 0;
+		this.idDeal = 0;
+		this.idReceive = 0;
+		this.kind = null;
+		this.money = 0;
+		this.note = null;
+		this.time = null;
+	}
+
+	public Deal(long idDeal, String kind, String date, String time, long idCustomer, double money, long idReceive,
+			String note) {
+		this.date = date;
+		this.idCustomer = idCustomer;
+		this.idDeal = idDeal;
+		this.idReceive = idReceive;
+		this.kind = kind;
+		this.money = money;
+		this.note = note;
+		this.time = time;
+	}
+
+	public long getIdDeal() {
+		return idDeal;
+	}
+
+	public void setIdDeal(long idDeal) {
+		this.idDeal = idDeal;
+	}
+
+	public long getIdCustomer() {
+		return idCustomer;
+	}
+
+	public void setIdCustomer(long idCustomer) {
+		this.idCustomer = idCustomer;
+	}
+
+	public long getIdReceive() {
+		return idReceive;
+	}
+
+	public void setIdReceive(long idReceive) {
+		this.idReceive = idReceive;
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
+	public String getTime() {
+		return time;
+	}
+
+	public void setTime(String time) {
+		this.time = time;
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+
+	public double getMoney() {
+		return money;
+	}
+
+	public void setMoney(double money) {
+		this.money = money;
+	}
+
+	public String getKind() {
+		return kind;
+	}
+
+	public boolean setKind(int kind) {
+		if (kind < 1 || kind > 3) {
+			System.out.println("Value not Available, Try again!!");
+			return false;
+		}
+
+		if (kind == 1)
+			this.kind = "Put On Money";
+		else if (kind == 2)
+			this.kind = "Get Out Money";
+		else
+			this.kind = "Transfer Money";
+
+		return true;
+
+	}
+
+	//id~~kind~~date~~time~~idcustomer~~money~~idreceive~~note
+	public String toString() {
+		return String.valueOf(idDeal) + "~~" + getKind() + "~~" + date + "~~" + time + "~~"
+				+ String.valueOf(idCustomer) + "~~" + String.valueOf(money) + "~~" + String.valueOf(idReceive) + "~~"
+				+ note;
+	}
+
+}
+package Deals;
+
+import File.FileProcess;
+import Function.Function;
+
+public class listDeals {
+
+	public boolean addDeal(String[] arrDeal, int number, Deal d) throws Exception {
+		Function F = new Function();
+		FileProcess file = new FileProcess();
+		try {
+		//	file.writeFile(arrDeal, number, "./DEALSFILE.INP");
+			file.writeFile(d.toString(), "./DEALSFILE.INP");
+			file.readFile(arrDeal, "./DEALSFILE.INP");
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+
+	public void showDeal(String[] arrDeal, int number) {
+		Function F = new Function();
+		for (int i = 0; i < number; i++) {
+			System.out.println("\nInfomation Deal " + (i + 1) + ": ");
+			F.showInfo(arrDeal[i]);
+		}
+	}
+
+	// id~~kind~~date~~time~~idcustomer~~money~~idreceive~~note
+	public void findByIdCus(String[] arrDeal, int number, long id) {
+		Function F = new Function();
+		boolean check = false;
+	//	System.out.println(number);
+		for (int i = 0; i < number; i++) {
+			String[] tmp = arrDeal[i].split("~~");
+			if (tmp[4].equals(String.valueOf(id)) || tmp[6].equals(String.valueOf(id))) {
+				F.showDeal(arrDeal[i]);
+				check = true;
+			}
+		}
+		if (!check)
+			System.out.println("Find not Found!");
+	}
+
+	public void findByIdDeals(String[] arrDeal, int number, long id) {
+		Function F = new Function();
+		boolean check = false;
+		for (int i = 0; i < number; i++) {
+			String[] tmp = arrDeal[i].split("~~");
+			if (tmp[0].equals(String.valueOf(id))) {
+				F.showDeal(arrDeal[i]);
+				check = true;
+			}
+		}
+		if (!check)
+			System.out.println("Find not Found!");
+	}
+
+	public void findByDate(String[] arrDeal, int number, String date) {
+		Function F = new Function();
+		boolean check = false;
+		for (int i = 0; i < number; i++) {
+			String[] tmp = arrDeal[i].split("~~");
+			if (tmp[2].equals(date)) {
+				F.showDeal(arrDeal[i]);
+				check = true;
+			}
+		}
+		if (!check)
+			System.out.println("Find not Found!");
+	}
+
+	public void findByLowMoney(String[] arrDeal, int number, double money) {
+		Function F = new Function();
+		boolean check = false;
+		for (int i = 0; i < number; i++) {
+			String[] tmp = arrDeal[i].split("~~");
+			if (Double.parseDouble(tmp[5]) <= money) {
+				F.showDeal(arrDeal[i]);
+				check = true;
+			}
+		}
+		if (!check)
+			System.out.println("Find not Found!");
+	}
+
+	public void findByHighMoney(String[] arrDeal, int number, double money) {
+		Function F = new Function();
+		boolean check = false;
+		for (int i = 0; i < number; i++) {
+			String[] tmp = arrDeal[i].split("~~");
+			if (Double.parseDouble(tmp[5]) >= money) {
+				F.showDeal(arrDeal[i]);
+				check = true;
+			}
+		}
+		if (!check)
+			System.out.println("Find not Found!");
+	}
+
+}
+package File;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+
+public class FileProcess {
+	public int readFile(String[] arrInfo, String nameFile) throws Exception {
+		File f1 = new File("./" + nameFile);
+		// f1.createNewFile();
+
+		FileReader fr = new FileReader(f1);
+		BufferedReader br = new BufferedReader(fr);
+		String tmp;
+		int count = 0;
+		try {
+			while ((tmp = br.readLine()) != null) {
+				arrInfo[count] = tmp;
+				// System.out.println(tmp);
+				count++;
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			fr.close();
+			br.close();
+			return -1;
+		}
+		fr.close();
+		br.close();
+
+		return count;
+	}
+
+	public boolean writeFile(String[] arrInfo, int number, String nameFile) throws Exception {
+		File f2 = new File(nameFile);
+		FileWriter fw = new FileWriter(f2);
+
+		try {
+			for (int i = 0; i < number; i++)
+				fw.write(arrInfo[i] + "\n");
+		} catch (Exception e) {
+			e.printStackTrace();
+			fw.close();
+			return false;
+		}
+
+		fw.close();
+		return true;
+	}
+
+	public boolean writeFile(String str, String nameFile) throws Exception {
+		File f2 = new File(nameFile);
+		FileWriter fw = new FileWriter(f2, true);
+		try {
+			fw.write(str + "\n");
+		} catch (Exception e) {
+			e.printStackTrace();
+			fw.close();
+			return false;
+		}
+
+		fw.close();
+		return true;
+	}
+}
+package Function;
+
+import java.io.*;
+import java.util.*;
+import File.FileProcess;
+import Users.*;
+
+public class Function {
+
+	public boolean signIn(String[] arrInfo, int number, long id, String password) {
+		Scanner objSc = new Scanner(System.in);
+		for (int i = 0; i < number; i++) {
+
+			String[] splitInfo = arrInfo[i].split("~~");
+			// id~~name~~address~~phone~~password~~verification~~kind~~(money/salary)
+			if (splitInfo[0].equals(String.valueOf(id)) && splitInfo[4].equals(password)) {
+				System.out.println("Sign In Successful !! Hello, " + splitInfo[1]);
+				return true;
+			}
+		}
+		System.out.println("Sign In Failed!! ");
+		return false;
+	}
+
+	public boolean signUp(String[] arrInfo, int number, Customer cus) throws IOException {
+		Scanner objSc = new Scanner(System.in);
+		long id;
+		String name, address, password1, password2, phone;
+		double money;
+
+		do {
+			id = (int) Math.floor(((Math.random() * 899999) + 100000));
+		} while (checkIdUser(arrInfo, number, id) || !cus.setId(id));
+
+		do {
+			System.out.print("Input Name: ");
+			name = objSc.nextLine();
+		} while (!cus.setName(name));
+
+		do {
+			System.out.print("Input Address: ");
+			address = objSc.nextLine();
+		} while (!cus.setAddress(address));
+
+		do {
+			System.out.print("Input Money: ");
+			money = objSc.nextDouble();
+		} while (!cus.setMoney(money));
+
+		do {
+			System.out.print("Input Number Phone: ");
+			objSc.nextLine();
+			phone = objSc.nextLine();
+		} while (!cus.setPhone(phone));
+
+		do {
+			System.out.print("Input Password: ");
+			password1 = objSc.nextLine();
+			System.out.print("Confirm Password: ");
+			password2 = objSc.nextLine();
+		} while (!checkPassword(password1, password2) || !cus.setPassword(password1));
+
+		System.out.println("Sign Up Successful !");
+		return true;
+	}
+
+	// id~~name~~address~~phone~~password~~verification~~kind~~(money/salary)
+	public void showInfo(String str) {
+		String[] tmp = str.split("~~");
+		System.out.println(
+				tmp[6] + "\nID: " + tmp[0] + "\nName: " + tmp[1] + "\nAddress: " + tmp[2] + "\nPhone: " + tmp[3]);
+		if (tmp[6].equals("Customer"))
+			System.out.println("Money: " + tmp[7]);
+		else
+			System.out.println("Salary: " + tmp[7]);
+
+	}
+
+	// id~~kind~~date~~time~~idcustomer~~money~~idreceive~~note
+	public void showDeal(String str) {
+		String[] tmp = str.split("~~");
+		System.out.println("\nID: " + tmp[0] + "\nKind Of Deal: " + tmp[1] + "\nDate: " + tmp[2] + "\nTime: " + tmp[3]
+				+ "\nID Customer: " + tmp[4] + "\nMoney: " + tmp[5] + "\nID Receive: " + tmp[6] + "\nNote: " + tmp[7]);
+	}
+
+	public boolean signUp(String[] arrInfo, int number, Employee emp) throws IOException {
+		Scanner objSc = new Scanner(System.in);
+		long id;
+		double salary;
+
+		String name, address, password1, password2, phone;
+		do {
+			id = (int) Math.floor(((Math.random() * 899999) + 100000));
+		} while (checkIdUser(arrInfo, number, id) || !emp.setId(id));
+
+		do {
+			System.out.print("Input Name: ");
+			name = objSc.nextLine();
+		} while (!emp.setName(name));
+
+		do {
+			System.out.print("Input Address: ");
+			address = objSc.nextLine();
+		} while (!emp.setAddress(address));
+
+		do {
+			System.out.print("Input Salary: ");
+			salary = objSc.nextDouble();
+		} while (!emp.setSalary(salary));
+
+		do {
+			System.out.print("Input Number Phone: ");
+			objSc.nextLine();
+			phone = objSc.nextLine();
+		} while (!emp.setPhone(phone));
+
+		do {
+			System.out.print("Input Password: ");
+			password1 = objSc.nextLine();
+			System.out.print("Confirm Password: ");
+			password2 = objSc.nextLine();
+		} while (!checkPassword(password1, password2) || !emp.setPassword(password1));
+
+		System.out.println("\nSign Up Successful !");
+		return true;
+	}
+
+	public boolean deleteUser(String[] arrInfo, int number, String user, int verificationCode) throws Exception {
+		FileProcess file = new FileProcess();
+	
+		listUsers LU = new listUsers();
+		String[] splitTmp = user.split("~~");
+
+		if (!splitTmp[5].equals(String.valueOf(verificationCode))) {
+			System.out.println("Verification Code not Match !!");
+			return false;
+		}
+
+		for (int i = LU.findById(arrInfo, number, Long.parseLong(splitTmp[0])); i < number - 1; i++)
+			arrInfo[i] = arrInfo[i + 1];
+
+		splitTmp[5] = "0";
+
+		file.writeFile(arrInfo, number - 1, "./USERSFILE.INP");
+		file.readFile(arrInfo, "./USERSFILE.INP");
+
+		System.out.println("Delete Users Successful !");
+		return true;
+	}
+
+	public boolean deleteUser(String[] arrInfo, int number, String user) throws Exception {
+		FileProcess file = new FileProcess();
+		listUsers LU = new listUsers();
+		String[] splitTmp = user.split("~~");
+		for (int i = LU.findById(arrInfo, number, Long.parseLong(splitTmp[0])); i < number - 1; i++)
+			arrInfo[i] = arrInfo[i + 1];
+
+		splitTmp[5] = "0";
+
+		file.writeFile(arrInfo, number - 1, "./USERSFILE.INP");
+		file.readFile(arrInfo, "./USERSFILE.INP");
+
+		System.out.println("Delete Users Successful !");
+		return true;
+	}
+
+	public boolean changePassword(String[] arrInfo, int number, String user, String newPass, int verificationCode)
+			throws Exception {
+		FileProcess file = new FileProcess();
+		listUsers LU = new listUsers();
+		String[] tmp = user.split("~~");
+
+		if (!tmp[5].equals(String.valueOf(verificationCode))) {
+			System.out.println("Verification Code not Match !!\nChange Password Failed");
+			return false;
+		}
+		if (newPass.length() < 4) {
+			System.out.println("\nPassword must longer 4 character, Try again!!\n");
+			return false;
+		}
+
+		tmp[4] = newPass;
+		tmp[5] = "0";
+
+		arrInfo[LU.findById(arrInfo, number, Long.parseLong(tmp[0]))] = changeArrStringToString(tmp);
+
+		file.writeFile(arrInfo, number, "./USERSFILE.INP");
+		file.readFile(arrInfo, "./USERSFILE.INP");
+
+		System.out.println("\nChange Password Successful !");
+		return true;
+	}
+
+	public boolean checkIdUser(String[] arrInfo, int number, long id) {
+		for (int i = 0; i < number; i++) {
+			String[] splitInfo = arrInfo[i].split("~~");
+			// id~~name~~address~~phone~~password~~verification~~kind~~(money/salary)
+			if (splitInfo[0].equals(String.valueOf(id)))
+				return true;
+		}
+		return false;
+	}
+
+	public boolean checkIdDeal(String[] arrDeal, int number, long id) {
+		for (int i = 0; i < number; i++) {
+			String[] splitDeal = arrDeal[i].split("~~");
+
+			if (splitDeal[0].equals(String.valueOf(id)))
+				return true;
+		}
+		return false;
+	}
+
+	public boolean checkPassword(String password1, String password2) {
+		if (!password1.equals(password2)) {
+			System.out.println("\nPassword not match, Try again!!\n");
+			return false;
+		}
+
+		if (password1.length() < 4) {
+			System.out.println("\nPassword must longer 4 character, Try again!!\n");
+			return false;
+		}
+
+		System.out.println("\nConfirm Password Successful !!");
+		return true;
+	}
+
+	public boolean checkPasswordUser(String user, String password) {
+		String[] splitTmp = user.split("~~");
+		if (!splitTmp[4].equals(password)) {
+			System.out.println("\nPassword not match, Try again!!\n");
+			return false;
+		}
+		return true;
+	}
+
+	public String dateToString() {
+		Calendar c = Calendar.getInstance();
+		return String.valueOf(c.get(Calendar.DATE)) + "/" + String.valueOf(c.get(Calendar.MONTH) + 1) + "/"
+				+ String.valueOf(c.get(Calendar.YEAR));
+	}
+
+	public String timeToString() {
+		Calendar c = Calendar.getInstance();
+		return String.valueOf(c.get(Calendar.HOUR_OF_DAY)) + "H : " + String.valueOf(c.get(Calendar.MINUTE)) + "M : "
+				+ String.valueOf(c.get(Calendar.SECOND) + "S");
+	}
+
+	public boolean transferMoney(String[] arrInfo, int number, String transfer, String receive, double money,
+			int verificationCode) throws Exception {
+		FileProcess file = new FileProcess();
+		listUsers LU = new listUsers();
+		String[] splitTmp = transfer.split("~~");
+		String[] splitTmp1 = receive.split("~~");
+
+		if (!splitTmp[5].equals(String.valueOf(verificationCode))) {
+			System.out.println("Verification Code not Match !!");
+			return false;
+		}
+
+		if (Double.parseDouble(splitTmp[7]) < (money + money * 5 / 100)) {
+			System.out.println("Not Enough Money, Try again !!");
+			return false;
+		}
+		splitTmp1[7] = String.valueOf(Double.parseDouble(splitTmp1[7]) + money);
+		splitTmp[7] = String.valueOf(Double.parseDouble(splitTmp[7]) - money - money * 5 / 100);
+		splitTmp[5] = "0";
+
+		arrInfo[LU.findById(arrInfo, number, Long.parseLong(splitTmp[0]))] = changeArrStringToString(splitTmp);
+		arrInfo[LU.findById(arrInfo, number, Long.parseLong(splitTmp1[0]))] = changeArrStringToString(splitTmp1);
+
+		file.writeFile(arrInfo, number, "./USERSFILE.INP");
+		file.readFile(arrInfo, "./USERSFILE.INP");
+
+		System.out.println("Transfer Successful !");
+
+		return true;
+
+	}
+
+	public boolean getOutMoney(String[] arrInfo, int number, String customer, double money, int verificationCode)
+			throws Exception {
+		FileProcess file = new FileProcess();
+		listUsers LU = new listUsers();
+		String[] splitTmp = customer.split("~~");
+
+		if (!splitTmp[5].equals(String.valueOf(verificationCode))) {
+			System.out.println("Verification Code not Match !!");
+			return false;
+		}
+
+		if (Double.parseDouble(splitTmp[7]) < (money + money * 5 / 100)) {
+			System.out.println("Not Enough Money, Try again !!");
+			return false;
+		}
+
+		splitTmp[7] = String.valueOf(Double.parseDouble(splitTmp[7]) - money - money * 5 / 100);
+		splitTmp[5] = "0";
+
+		arrInfo[LU.findById(arrInfo, number, Long.parseLong(splitTmp[0]))] = changeArrStringToString(splitTmp);
+
+		file.writeFile(arrInfo, number, "./USERSFILE.INP");
+
+		file.readFile(arrInfo, "./USERSFILE.INP");
+
+		System.out.println("Get Out Money Successful !");
+
+		return true;
+
+	}
+
+	public boolean putOnMoney(String[] arrInfo, int number, String customer, double money, int verificationCode)
+			throws Exception {
+		FileProcess file = new FileProcess();
+		listUsers LU = new listUsers();
+		String[] splitTmp = customer.split("~~");
+
+		if (!splitTmp[5].equals(String.valueOf(verificationCode))) {
+			System.out.println("Verification Code not Match !!");
+			return false;
+		}
+
+		splitTmp[7] = String.valueOf(Double.parseDouble(splitTmp[7]) + money);
+		splitTmp[5] = "0";
+
+		arrInfo[LU.findById(arrInfo, number, Long.parseLong(splitTmp[0]))] = changeArrStringToString(splitTmp);
+
+		file.writeFile(arrInfo, number, "./USERSFILE.INP");
+		file.readFile(arrInfo, "./USERSFILE.INP");
+
+		System.out.println("Put On Money Successful !");
+
+		return true;
+	}
+
+	public String changeArrStringToString(String[] arrStr) {
+		String info = "";
+		for (int i = 0; i < arrStr.length; i++) {
+			info = info.concat(arrStr[i]);
+			if (i == 7) {
+				break;
+			} else
+				info = info.concat("~~");
+		}
+
+		return info;
+	}
+}
+package Main;
+
+import java.io.*;
+import java.util.*;
+import Users.*;
+import Function.*;
+import Deals.*;
+import File.FileProcess;
+
+public class Main {
+
+	public static void main(String[] args) throws NumberFormatException, Exception {
+
+		Scanner objSc = new Scanner(System.in);
+		FileProcess file = new FileProcess();
+		Customer cus = new Customer();
+
+		listUsers LU = new listUsers();
+		Function F = new Function();
+		listDeals LD = new listDeals();
+		Manager man = new Manager();
+		File fu = new File("./USERSFILE.INP");
+		File fd = new File("./DEALSFILE.INP");
+		fu.createNewFile();
+		fd.createNewFile();
+
+		int choose, choose1, location, verificationCode, choose2, choose3, con, numberUsers, numberDeals;
+		long id, idReceive, idCustomer, idDeal = 0;
+		String password, note, name, date, password1, password2;
+		double money;
+
+		String[] arrInfo = new String[1000];
+		String[] arrDeal = new String[1000];
+
+		numberUsers = file.readFile(arrInfo, "./USERSFILE.INP");
+		numberDeals = file.readFile(arrDeal, "./DEALSFILE.INP");
+
+		do {
+
+			do {
+				System.out.print("\n1.Log In\n2.Exit\nYour Choose: ");
+				choose = objSc.nextInt();
+				if (choose < 1 || choose > 2)
+					System.out.println("Value not available, Try again!!");
+			} while (choose < 1 || choose > 2);
+
+			// Sign In
+			if (choose == 1) { //
+				do {
+					System.out.print("\nID: ");
+					id = objSc.nextLong();
+					System.out.print("Password: ");
+					objSc.nextLine();
+					password = objSc.nextLine();
+				} while (!F.signIn(arrInfo, numberUsers, id, password));
+
+				location = LU.findById(arrInfo, numberUsers, id);
+				String[] arrUserTmp = arrInfo[location].split("~~");
+				System.out.println("\nInformation \n");
+				F.showInfo(arrInfo[location]);
+
+				// Customer
+
+				if (arrUserTmp[6].equals("Customer")) {
+					do {
+						do {
+							System.out.print(
+									"\n1.Put On Money\n2.Get Out Money\n3.Transfer Money\n4.Show Information\n5.Show History Deals\n6.Change Password\nYour Choose: ");
+							choose1 = objSc.nextInt();
+							if (choose1 < 1 || choose1 > 6)
+								System.out.println("Value not available, Try again!!");
+						} while (choose1 < 1 || choose1 > 6);
+
+						switch (choose1) {
+
+						// Put On Money
+						case 1: {
+							String[] arrUser = arrInfo[location].split("~~");
+							String tmpStr;
+							do {
+								System.out.print("Input Money: ");
+								money = objSc.nextDouble();
+								note = "Not Note";
+
+								arrUser[5] = String.valueOf((int) Math.floor(((Math.random() * 899999) + 100000)));
+
+								System.out.println("*** In display phone of Customer: " + arrUser[5] + " ***");
+
+								System.out.print("\nInput Verification Code: ");
+								verificationCode = objSc.nextInt();
+								tmpStr = F.changeArrStringToString(arrUser);
+
+							} while (!F.putOnMoney(arrInfo, numberUsers, tmpStr, money, verificationCode));
+							do {
+								idDeal = (int) Math.floor(((Math.random() * 899999) + 100000));
+							} while (F.checkIdDeal(arrDeal, numberDeals, idDeal));
+
+							Deal D = new Deal(idDeal, "Put On Money", F.dateToString(), F.timeToString(),
+									Long.parseLong(arrUser[0]), money, Long.parseLong(arrUser[0]), note);
+							System.out.println("\n Information Deal\n");
+							F.showDeal(D.toString());
+							LD.addDeal(arrDeal, numberDeals, D);
+							numberDeals++;
+							// System.out.println("hello");
+							break;
+						}
+						// Get Out Money
+						case 2: {
+							String tmpStr;
+							String[] arrUser = arrInfo[location].split("~~");
+							do {
+								System.out.print("Input Money: ");
+								money = objSc.nextDouble();
+								note = "Not Note";
+
+								arrUser[5] = String.valueOf((int) Math.floor(((Math.random() * 899999) + 100000)));
+
+								System.out.println("*** In display phone of Customer: " + arrUser[5] + " ***");
+
+								System.out.print("\nInput Verification Code: ");
+								verificationCode = objSc.nextInt();
+								tmpStr = F.changeArrStringToString(arrUser);
+
+							} while (!F.getOutMoney(arrInfo, numberUsers, tmpStr, money, verificationCode));
+							do {
+								idDeal = (int) Math.floor(((Math.random() * 899999) + 100000));
+							} while (F.checkIdDeal(arrDeal, numberDeals, idDeal));
+
+							Deal D = new Deal(idDeal, "Get  Money", F.dateToString(), F.timeToString(),
+									Long.parseLong(arrUser[0]), money, Long.parseLong(arrUser[0]), note);
+							System.out.println("\n Information Deal\n");
+							F.showDeal(D.toString());
+							LD.addDeal(arrDeal, numberDeals, D);
+							numberDeals++;
+							// System.out.println("hello");
+							break;
+						}
+						// Transfer Money
+						case 3: {
+							String tmpStr;
+							String[] arrUser = arrInfo[location].split("~~");
+							do {
+								System.out.print("Input Money: ");
+								money = objSc.nextDouble();
+								do {
+									System.out.print("Input ID Receive: ");
+									idReceive = objSc.nextLong();
+								} while (!LU.checkId(arrInfo, numberUsers, idReceive, "Customer"));
+								System.out.print("Input Note: ");
+								objSc.nextLine();
+								note = objSc.nextLine();
+
+								arrUser[5] = String.valueOf((int) Math.floor(((Math.random() * 899999) + 100000)));
+
+								System.out.println("*** In display phone of Customer: " + arrUser[5] + " ***");
+
+								System.out.print("\nInput Verification Code: ");
+								verificationCode = objSc.nextInt();
+
+								tmpStr = F.changeArrStringToString(arrUser);
+
+							} while (!F.transferMoney(arrInfo, numberUsers, tmpStr,
+									arrInfo[LU.findById(arrInfo, numberUsers, idReceive)], money, verificationCode));
+							do {
+								idDeal = (int) Math.floor(((Math.random() * 899999) + 100000));
+							} while (F.checkIdDeal(arrDeal, numberDeals, idDeal));
+
+							Deal D = new Deal(idDeal, "Transfer Money", F.dateToString(), F.timeToString(),
+									Long.parseLong(arrUser[0]), money, idReceive, note);
+							System.out.println("\n Information Deal\n");
+							F.showDeal(D.toString());
+							LD.addDeal(arrDeal, numberDeals, D);
+							numberDeals++;
+							break;
+						}
+						// Show Infomation
+						case 4: {
+							System.out.println("\nInformation \n");
+							F.showInfo(arrInfo[location]);
+							break;
+						}
+						// Show History Deals
+						case 5: {
+							System.out.println("\nHistory Deals \n");
+							LD.findByIdCus(arrDeal, numberDeals, id);
+							break;
+						}
+						// Change Password
+						case 6: {
+							String tmpStr;
+							String[] arrUser = arrInfo[location].split("~~");
+							do {
+								objSc.nextLine();
+								System.out.print("Enter your Password: ");
+								password = objSc.nextLine();
+								System.out.print("Enter New Password: ");
+								password1 = objSc.nextLine();
+								System.out.print("Confirm New Password: ");
+								password2 = objSc.nextLine();
+							} while (!F.checkPasswordUser(arrInfo[location], password)
+									|| !F.checkPassword(password1, password2));
+
+							arrUser[5] = String.valueOf((int) Math.floor(((Math.random() * 899999) + 100000)));
+
+							System.out.println("*** In display phone of Customer: " + arrUser[5] + " ***");
+
+							System.out.print("\nInput Verification Code: ");
+							verificationCode = objSc.nextInt();
+							tmpStr = F.changeArrStringToString(arrUser);
+							F.changePassword(arrInfo, numberUsers, tmpStr, password1, verificationCode);
+
+							break;
+						}
+						}
+						do {
+							System.out.print("Do you want continue? (1.Yes / 2.No): ");
+							con = objSc.nextInt();
+							if (con < 1 || con > 2)
+								System.out.println("Value not available, Try again !");
+						} while (con < 1 || con > 2);
+					} while (con == 1);
+				}
+
+				// Employee
+				else if (arrUserTmp[6].equals("Employee")) {
+					do {
+						do {
+							System.out.print(
+									"\n1.Put On Money\n2.Get Out Money\n3.Transfer Money\n4.Find Customers\n5.Find Deals\n6.Sign up Customer Users\n7.Delete Customer\n8.Change Password\nYour Choose: ");
+							choose1 = objSc.nextInt();
+							if (choose1 < 1 || choose1 > 8)
+								System.out.println("Value not available, Try again!!");
+						} while (choose1 < 1 || choose1 > 8);
+
+						switch (choose1) {
+
+						// Put On Money
+						case 1: {
+							String tmpStr;
+							do {
+								do {
+									System.out.print("\nInput ID Customer: ");
+									idCustomer = objSc.nextLong();
+								} while (!LU.checkId(arrInfo, numberUsers, idCustomer, "Customer"));
+								System.out.print("Input Money: ");
+								money = objSc.nextDouble();
+								note = "Not Note";
+
+								String[] arrCus = arrInfo[LU.findById(arrInfo, numberUsers, idCustomer)].split("~~");
+
+								arrCus[5] = String.valueOf((int) Math.floor(((Math.random() * 899999) + 100000)));
+
+								System.out.println("*** In display phone of Customer: " + arrCus[5] + " ***");
+
+								System.out.print("\nInput Verification Code: ");
+								verificationCode = objSc.nextInt();
+								tmpStr = F.changeArrStringToString(arrCus);
+
+							} while (!F.putOnMoney(arrInfo, numberUsers, tmpStr, money, verificationCode));
+							do {
+								idDeal = (int) Math.floor(((Math.random() * 899999) + 100000));
+							} while (F.checkIdDeal(arrDeal, numberDeals, idDeal));
+
+							Deal D = new Deal(idDeal, "Put On Money", F.dateToString(), F.timeToString(), idCustomer,
+									money, idCustomer, note);
+							System.out.println("\n Information Deal\n");
+							F.showDeal(D.toString());
+							LD.addDeal(arrDeal, numberDeals, D);
+							numberDeals++;
+							// System.out.println("hello");
+							break;
+						}
+						// Get Out Money
+						case 2: {
+							String tmpStr;
+							do {
+								do {
+									System.out.print("\nInput ID Customer: ");
+									idCustomer = objSc.nextLong();
+								} while (!LU.checkId(arrInfo, numberUsers, idCustomer, "Customer"));
+								System.out.print("Input Money: ");
+								money = objSc.nextDouble();
+								note = "Not Note";
+
+								String[] arrCus = arrInfo[LU.findById(arrInfo, numberUsers, idCustomer)].split("~~");
+
+								arrCus[5] = String.valueOf((int) Math.floor(((Math.random() * 899999) + 100000)));
+
+								System.out.println("*** In display phone of Customer: " + arrCus[5] + " ***");
+
+								System.out.print("\nInput Verification Code: ");
+								verificationCode = objSc.nextInt();
+								tmpStr = F.changeArrStringToString(arrCus);
+
+							} while (!F.getOutMoney(arrInfo, numberUsers, tmpStr, money, verificationCode));
+							do {
+								idDeal = (int) Math.floor(((Math.random() * 899999) + 100000));
+							} while (F.checkIdDeal(arrDeal, numberDeals, idDeal));
+
+							Deal D = new Deal(idDeal, "Get Out Money", F.dateToString(), F.timeToString(), idCustomer,
+									money, idCustomer, note);
+							System.out.println("\n Information Deal\n");
+							F.showDeal(D.toString());
+							LD.addDeal(arrDeal, numberDeals, D);
+							numberDeals++;
+							// System.out.println("hello");
+							break;
+						}
+						// Transfer Money
+						case 3: {
+							String tmpStr;
+							do {
+								do {
+									System.out.print("\nInput ID Customer: ");
+									idCustomer = objSc.nextLong();
+								} while (!LU.checkId(arrInfo, numberUsers, idCustomer, "Customer"));
+								do {
+									System.out.print("Input ID Receive: ");
+									idReceive = objSc.nextLong();
+								} while (!LU.checkId(arrInfo, numberUsers, idReceive, "Customer"));
+								System.out.print("Input Money: ");
+								money = objSc.nextDouble();
+								System.out.print("Input Note: ");
+								objSc.nextLine();
+								note = objSc.nextLine();
+
+								String[] arrCus = arrInfo[LU.findById(arrInfo, numberUsers, idCustomer)].split("~~");
+
+								arrCus[5] = String.valueOf((int) Math.floor(((Math.random() * 899999) + 100000)));
+
+								System.out.println("*** In display phone of Customer: " + arrCus[5] + " ***");
+
+								System.out.print("\nInput Verification Code: ");
+
+								verificationCode = objSc.nextInt();
+								tmpStr = F.changeArrStringToString(arrCus);
+
+							} while (!F.transferMoney(arrInfo, numberUsers, tmpStr,
+									arrInfo[LU.findById(arrInfo, numberUsers, idReceive)], money, verificationCode));
+							do {
+								idDeal = (int) Math.floor(((Math.random() * 899999) + 100000));
+							} while (F.checkIdDeal(arrDeal, numberDeals, idDeal));
+
+							Deal D = new Deal(idDeal, "Get Out Money", F.dateToString(), F.timeToString(), idCustomer,
+									money, idReceive, note);
+							System.out.println("\n Information Deal\n");
+							F.showDeal(D.toString());
+							LD.addDeal(arrDeal, numberDeals, D);
+							numberDeals++;
+							// System.out.println("hello");
+							break;
+						}
+						// find customers
+						case 4: {
+							do {
+								System.out.print("\n1.Find customer by ID\n2.Find customer by Name\nYour Choose: ");
+								choose2 = objSc.nextInt();
+								if (choose2 < 1 || choose2 > 2)
+									System.out.println("Value not available, Try again!!");
+							} while (choose2 < 1 || choose2 > 2);
+
+							if (choose2 == 1) {
+								System.out.print("\nInput ID: ");
+								idCustomer = objSc.nextLong();
+								LU.findByIdCus(arrInfo, numberUsers, idCustomer);
+							} else {
+								System.out.print("\nInput Name: ");
+								objSc.nextLine();
+								name = objSc.nextLine();
+								LU.findByNameCus(arrInfo, numberUsers, name);
+							}
+							break;
+						}
+						// Find deals
+						case 5: {
+							do {
+								System.out.print(
+										"\n1.Find Deals by Money\n2.Find Deals by ID\n3.Find Deals by Date\nYour Choose: ");
+								choose2 = objSc.nextInt();
+								if (choose2 < 1 || choose2 > 3)
+									System.out.println("Value not available, Try again!!");
+							} while (choose2 < 1 || choose2 > 3);
+
+							if (choose2 == 1) {
+								System.out.print("\nInput Money: ");
+								money = objSc.nextDouble();
+								do {
+									System.out.print("\n1.Find lower Money\n2.Find higher Money\nYour Choose: ");
+									choose3 = objSc.nextInt();
+									if (choose3 < 1 || choose3 > 2)
+										System.out.println("Value not available, Try again!!");
+								} while (choose3 < 1 || choose3 > 2);
+
+								if (choose3 == 1)
+									LD.findByLowMoney(arrDeal, numberDeals, money);
+								else
+									LD.findByHighMoney(arrDeal, numberDeals, money);
+
+							} else if (choose2 == 2) {
+								System.out.print("\nInput Deal ID: ");
+								idDeal = objSc.nextLong();
+								LD.findByIdDeals(arrDeal, numberDeals, idDeal);
+
+							} else if (choose2 == 3) {
+								System.out.print("\nInput Date: ");
+								objSc.nextLine();
+								date = objSc.nextLine();
+								LD.findByDate(arrDeal, numberDeals, date);
+							}
+							break;
+						}
+						// Sign Up
+						case 6: {
+							Customer tmp = new Customer();
+							F.signUp(arrInfo, numberUsers, tmp);
+							tmp.setKind(1);
+							LU.addUsers(arrInfo, numberUsers, tmp);
+							numberUsers++;
+							System.out.println("\nInformation ");
+							F.showInfo(tmp.toString());
+							break;
+						}
+						// delete customer
+						case 7: {
+							String tmpStr;
+
+							do {
+								do {
+									System.out.print("\nInput ID Customer: ");
+									idCustomer = objSc.nextLong();
+								} while (!LU.checkId(arrInfo, numberUsers, idCustomer, "Customer"));
+
+								String[] arrUser = arrInfo[LU.findById(arrInfo, numberUsers, idCustomer)].split("~~");
+
+								arrUser[5] = String.valueOf((int) Math.floor(((Math.random() * 899999) + 100000)));
+
+								System.out.println("*** In display phone of Customer: " + arrUser[5] + " ***");
+
+								System.out.print("\nInput Verification Code: ");
+								verificationCode = objSc.nextInt();
+								tmpStr = F.changeArrStringToString(arrUser);
+
+							} while (!F.deleteUser(arrInfo, numberUsers, tmpStr, verificationCode));
+							numberUsers--;
+							break;
+						}
+						// change password
+						case 8: {
+							String tmpStr;
+							String[] arrUser = arrInfo[location].split("~~");
+							do {
+								objSc.nextLine();
+								System.out.print("Enter your Password: ");
+								password = objSc.nextLine();
+								System.out.print("Enter New Password: ");
+								password1 = objSc.nextLine();
+								System.out.print("Confirm New Password: ");
+								password2 = objSc.nextLine();
+							} while (!F.checkPasswordUser(arrInfo[location], password)
+									|| !F.checkPassword(password1, password2));
+
+							arrUser[5] = String.valueOf((int) Math.floor(((Math.random() * 899999) + 100000)));
+
+							System.out.println("*** In display phone of Customer: " + arrUser[5] + " ***");
+
+							System.out.print("\nInput Verification Code: ");
+							verificationCode = objSc.nextInt();
+							tmpStr = F.changeArrStringToString(arrUser);
+							F.changePassword(arrInfo, numberUsers, tmpStr, password1, verificationCode);
+
+							break;
+						}
+						}
+						do {
+							System.out.print("Do you want continue? (1.Yes / 2.No): ");
+							con = objSc.nextInt();
+							if (con < 1 || con > 2)
+								System.out.println("Value not available, Try again !");
+						} while (con < 1 || con > 2);
+					} while (con == 1);
+				} else {
+					// Manager
+					do {
+						do {
+							System.out.print(
+									"\n1.Statistical\n2.Sign Up Employee Users\n3.Delete Employee\n4.Show all Users\n5.Show all Deals\n6.Change Password\nYour Choose: ");
+							choose1 = objSc.nextInt();
+							if (choose1 < 1 || choose1 > 6) {
+								System.out.println("Value not available, Try again!");
+
+							}
+						} while (choose1 < 1 || choose1 > 6);
+
+						switch (choose1) {
+						// Statistical
+						case 1: {
+							man.statistical();
+							break;
+						}
+						// Sign Up Employee Users
+						case 2: {
+							Employee tmp = new Employee();
+							F.signUp(arrInfo, numberUsers, tmp);
+							tmp.setKind(2);
+							LU.addUsers(arrInfo, numberUsers, tmp);
+							F.showInfo(tmp.toString());
+							numberUsers++;
+							break;
+						}
+						// Delete Employee
+						case 3: {
+							String tmpStr;
+							do {
+								do {
+									System.out.print("\nInput ID Employee: ");
+									idCustomer = objSc.nextLong();
+								} while (!LU.checkId(arrInfo, numberUsers, idCustomer, "Employee"));
+
+								String[] arrUser = arrInfo[LU.findById(arrInfo, numberUsers, idCustomer)].split("~~");
+								tmpStr = F.changeArrStringToString(arrUser);
+							} while (!F.deleteUser(arrInfo, numberUsers, tmpStr));
+							numberUsers--;
+							break;
+						}
+						// Show all Users
+						case 4: {
+							LU.showList(arrInfo, numberUsers);
+							break;
+						}
+						// Show all Deals
+						case 5: {
+							LD.showDeal(arrDeal, numberDeals);
+							break;
+						}
+						// Change Password
+						case 6: {
+							String tmpStr;
+							String[] arrUser = arrInfo[location].split("~~");
+							do {
+								objSc.nextLine();
+								System.out.print("Enter your Password: ");
+								password = objSc.nextLine();
+								System.out.print("Enter New Password: ");
+								password1 = objSc.nextLine();
+								System.out.print("Confirm New Password: ");
+								password2 = objSc.nextLine();
+							} while (!F.checkPasswordUser(arrInfo[location], password)
+									|| !F.checkPassword(password1, password2));
+
+							arrUser[5] = String.valueOf((int) Math.floor(((Math.random() * 899999) + 100000)));
+
+							System.out.println("*** In display phone of Customer: " + arrUser[5] + " ***");
+
+							System.out.print("\nInput Verification Code: ");
+							verificationCode = objSc.nextInt();
+							tmpStr = F.changeArrStringToString(arrUser);
+							F.changePassword(arrInfo, numberUsers, tmpStr, password1, verificationCode);
+
+							break;
+						}
+
+						}
+						do {
+							System.out.print("\nDo you want continue? (1.Yes / 2.No): ");
+							con = objSc.nextInt();
+							if (con < 1 || con > 2)
+								System.out.println("Value not available, Try again !");
+						} while (con < 1 || con > 2);
+					} while (con == 1);
+				}
+			}
+		} while (choose != 2);
+
+	}
+}
+package Users;
+
+import java.util.*;
+
+public class Users {
+	Scanner objSc = new Scanner(System.in);
+	Random generator = new Random(9999);
+
+	protected String kind;
+	protected String name, address, phone;
+	protected long id;
+	private String password;
+	private int verificationCode;
+
+	public Users() {
+		this.kind = null;
+		this.name = null;
+		this.address = null;
+		this.id = 0;
+		this.password = null;
+		this.verificationCode = 0;
+	}
+
+	public Users(long id, String name, String address, String password, String kind, int verificationCode,
+			String phone) {
+		this.address = address;
+		this.id = id;
+		this.name = name;
+		this.password = password;
+		this.kind = kind;
+		this.verificationCode = verificationCode;
+		this.phone = phone;
+
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public boolean setPhone(String phone) {
+		if (phone.isEmpty()) {
+			System.out.println("Can not Empty, Try again !!");
+			return false;
+		}
+		this.phone = phone;
+		return true;
+	}
+
+	public int getVerificationCode() {
+		return verificationCode;
+	}
+
+	public void setVerificationCode(int verificationCode) {
+		this.verificationCode = verificationCode;
+	}
+
+	public String getKind() {
+		return kind;
+	}
+
+	public boolean setKind(int kind) {
+		if (kind < 1 || kind > 3) {
+			System.out.println("Value not Available, Try again!!");
+			return false;
+		}
+
+		if (kind == 1)
+			this.kind = "Customer";
+		else if (kind == 2)
+			this.kind = "Employee";
+		else
+			this.kind = "Manager";
+
+		return true;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public boolean setName(String name) {
+		if (name.isEmpty()) {
+			System.out.println("Can not Empty, Try again !!");
+			return false;
+		}
+		this.name = name;
+		return true;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public boolean setAddress(String address) {
+		if (address.isEmpty()) {
+			System.out.println("Can not Empty, Try again !!");
+			return false;
+		}
+		this.address = address;
+		return true;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public boolean setId(long id) {
+		if (id <= 0) {
+			System.out.println("Value not available, Try again !!");
+			return false;
+		}
+		this.id = id;
+		return true;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public boolean setPassword(String password) {
+		if (password.isEmpty()) {
+			System.out.println("Can not Empty, Try again !!");
+			return false;
+		}
+		this.password = password;
+		return true;
+	}
+
+	public String toString() {
+		return String.valueOf(getId()) + "~~" + getName() + "~~" + getAddress() + "~~" + getPhone() + "~~"
+				+ getPassword() + "~~" + String.valueOf(getVerificationCode()) + "~~" + getKind() + "~~";
+	}
+
+}
+package Users;
+
+import java.util.*;
+
+
+public class Customer extends Users {
+
+	Scanner objSc = new Scanner(System.in);
+
+	private double money;
+
+	public Customer() {
+		super();
+		this.money = 0;
+		
+	}
+
+	public Customer(long id, String name, String address, String password, String kind, int verificationCode, String phone, double money) {
+		super(id, name, address, password, kind, verificationCode, phone);
+		this.money = money;
+	}
+
+	public double getMoney() {
+		return money;
+	}
+
+	public boolean setMoney(double money) {
+		if (money < 0) {
+			System.out.println("Value not available, Try again!!");
+			return false;
+		}
+		this.money = money;
+		return true;
+	}
+
+	public String toString() {
+		return super.toString() + String.valueOf(money);
+	}
+
+	
+
+}
+package Users;
+
+
+import java.util.*;
+
+
+
+public class Employee extends Users {
+
+	Scanner objSc = new Scanner(System.in);
+	listUsers LU = new listUsers();
+
+	private double salary;
+
+	public Employee() {
+		super();
+		this.salary = 0;
+	}
+
+	public Employee(long id, String name, String address, String password, String kind, int verificationCode,
+			String phone, double salary) {
+		super(id, name, address, password, kind, verificationCode, phone);
+		this.salary = salary;
+	}
+
+	public double getSalary() {
+		return salary;
+	}
+
+	public boolean setSalary(double salary) {
+		if (salary < 0) {
+			System.out.println("Value not available, Try again!!");
+			return false;
+		}
+		this.salary = salary;
+		return true;
+	}
+
+
+	public String toString() {
+		return super.toString() + String.valueOf(salary);
+	}
+
+	
+}
+
+package Users;
+import java.util.*;
+import Deals.*;
+
+
+public class Manager extends Users {
+	listDeals D = new listDeals();
+	Scanner objSc = new Scanner(System.in);
+
+	private double salary;
+
+	public Manager() {
+		super();
+		this.salary = 0;
+	}
+
+	public Manager(long id, String name, String address, String password, String kind, int verificationCode, String phone, double salary) {
+		super(id, name, address, password, kind, verificationCode, phone);
+		this.salary = salary;
+	}
+
+	public double getSalary() {
+		return salary;
+	}
+
+	public boolean setSalary(double salary) {
+		if (salary < 0) {
+			System.out.println("Value not available, Try again!!");
+			return false;
+		}
+		this.salary = salary;
+		return true;
+	}
+
+	public String toString() {
+		return super.toString() + String.valueOf(salary);
+	}
+
+	public void statistical() {
+		System.out.println("Coming Soon!!");
+	}
+
+}
+
+package Users;
+
+import File.FileProcess;
+import Function.Function;
+
+public class listUsers {
+
+	public boolean addUsers(String[] arrInfo, int number, Users u) throws Exception {
+		Function F = new Function();
+		FileProcess file = new FileProcess();
+		try {
+			file.writeFile(arrInfo, number, "./USERSFILE.INP");
+			file.writeFile(u.toString(), "./USERSFILE.INP");
+			file.readFile(arrInfo, "./USERSFILE.INP");
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+
+	public void showList(String[] arrInfo, int number) {
+		Function F = new Function();
+		for (int i = 0; i < number; i++) {
+			System.out.println("\nInfomation User " + (i + 1) + ": ");
+			F.showInfo(arrInfo[i]);
+		}
+	}
+
+	public boolean checkId(String[] arrInfo, int number, long id, String kind) {
+		for (int i = 0; i < number; i++) {
+			String[] tmp = arrInfo[i].split("~~");
+			if (tmp[0].equals(String.valueOf(id)) && tmp[6].equals(kind))
+				return true;
+		}
+		System.out.println("ID not Found !");
+		return false;
+	}
+
+	public void findByIdCus(String[] arrInfo, int number, long id) {
+		Function F = new Function();
+		boolean check = false;
+		for (int i = 0; i < number; i++) {
+			String[] tmp = arrInfo[i].split("~~");
+			if (tmp[0].equals(String.valueOf(id)) && tmp[6].equals("Customer")) {
+				F.showInfo(arrInfo[i]);
+				check = true;
+			}
+		}
+		if (!check)
+			System.out.println("Find not Found!");
+	}
+
+	public int findById(String[] arrInfo, int number, long id) {
+		for (int i = 0; i < number; i++) {
+			String[] tmp = arrInfo[i].split("~~");
+			if (tmp[0].equals(String.valueOf(id)))
+				return i;
+		}
+		return -1;
+	}
+
+	public void findByNameCus(String[] arrInfo, int number, String name) {
+		Function F = new Function();
+		boolean check = false;
+		for (int i = 0; i < number; i++) {
+			String[] tmp = arrInfo[i].split("~~");
+			if (tmp[1].equalsIgnoreCase(name) && tmp[6].equals("Customer")) {
+				F.showInfo(arrInfo[i]);
+				check = true;
+			}
+		}
+		if (!check)
+			System.out.println("Find not Found!");
+	}
+
+	public void findByKind(String[] arrInfo, int number, String Kind) {
+		Function F = new Function();
+		boolean check = false;
+		for (int i = 0; i < number; i++) {
+			String[] tmp = arrInfo[i].split("~~");
+			if (tmp[6].equals(Kind)) {
+				F.showInfo(arrInfo[i]);
+				check = true;
+			}
+		}
+		if (!check)
+			System.out.println("Find not Found!");
+	}
+}
